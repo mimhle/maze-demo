@@ -14,10 +14,18 @@
 <div id="input">
     <button id="generate" onclick="btnGenerate_Click()">Generate</button>
     <label for="animateCheckbox"> Animate </label><input id="animateCheckbox" type="checkbox" checked>
-    <label for="generateAlgorithm"> Generate algorithm </label><select id="generateAlgorithm">
+    <label for="generateAlgorithm"> Generate algorithm </label>
+    <select id="generateAlgorithm">
         <option value="0">Randomized Depth-First Search</option>
         <option value="1">Randomized Prim's Algorithm</option>
+        <option value="2">Wilson's Algorithm</option>
     </select>
+    <label for="solveAlgorithm"> Solve algorithm </label>
+    <select id="solveAlgorithm">
+        <option value="0">Depth-First Search</option>
+    </select>
+    <button id="solve" onclick="btnSolve_Click()">Solve</button>
+
 </div>
 </body>
 </html>

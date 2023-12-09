@@ -8,6 +8,7 @@ if (width % pixelSize !== 0 || height % pixelSize !== 0) {
 
 let maze = new Maze(width / pixelSize, height / pixelSize)
 let generator = null
+let solver = null
 
 function setup() {
     pixelDensity(1);
@@ -19,22 +20,48 @@ function setup() {
 
 function draw() {
     background(255);
-    let done = generator?.next().done;
-    if (done) {
-        noLoop();
-        generator = null;
+    if (generator) {
+        const done = generator?.next().done;
+        if (done) {
+            noLoop();
+            generator = null;
+        }
+    } else if (solver) {
+        drawMaze(maze);
+        const done = solver?.next().done;
+        if (done) {
+            noLoop();
+            solver = null;
+        }
     }
 }
 
 function btnGenerate_Click() {
     loop();
-    if (generator?.next().done || generator === null) {
+    if ((generator?.next().done || generator === null) && (solver?.next().done || solver === null)) {
         maze = new Maze(width / pixelSize, height / pixelSize);
-        generator = visualize(
+        generator = visualizeGenerate(
             getGenAlg(),
             maze,
             0,
             0,
+            !document.getElementById("animateCheckbox")?.checked
+        );
+    }
+}
+
+function btnSolve_Click() {
+    loop();
+    if ((solver?.next().done || solver === null) && (generator?.next().done || generator === null)) {
+        maze.resetVisited();
+        maze.resetPath();
+        solver = visualizeSolve(
+            getSolverAlg(),
+            maze,
+            0,
+            0,
+            maze.size.width - 1,
+            maze.size.height - 1,
             !document.getElementById("animateCheckbox")?.checked
         );
     }
@@ -47,10 +74,27 @@ function getGenAlg() {
             return randomizedDfs;
         case "1":
             return randomizedPrims;
+        case "2":
+            return wilsons;
         default:
             throw new Error("Invalid algorithm");
     }
 }
+
+function getSolverAlg() {
+    const alg = document.getElementById("solveAlgorithm").value;
+    switch (alg) {
+        case "0":
+            return dfsSolve;
+        case "1":
+            return bfs;
+        case "2":
+            return aStar;
+        default:
+            throw new Error("Invalid algorithm");
+    }
+}
+
 
 function* randomizedDfs(maze, x, y) {
     let stack = [];
@@ -100,10 +144,54 @@ function* randomizedPrims(maze, x, y) {
     return maze;
 }
 
+function* wilsons(maze, x, y) {
+    // random work from x, y
+    // let randomX = Math.floor(Math.random() * maze.size.width);
+    // let randomY = Math.floor(Math.random() * maze.size.height);
+    // maze.visited[randomX][randomY] = true;
+}
 
 
+function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+    let stack = [];
+    stack.push([startX, startY]);
+    maze.visited[startX][startY] = true;
 
-function* visualize(alg, maze, x, y, fast = false) {
+    while (stack.length > 0) {
+        let [x, y] = stack.pop();
+        if (x === endX && y === endY) {
+            break;
+        }
+        let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        for (let neighbor of connectedNeighbors) {
+            if (!maze.visited[neighbor[0]][neighbor[1]]) {
+                stack.push(neighbor);
+                maze.visited[neighbor[0]][neighbor[1]] = true;
+                maze.path.push([x, y, neighbor[0], neighbor[1]]);
+            }
+        }
+        yield maze;
+    }
+    return maze;
+}
+
+function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1, fast = false) {
+    const solver = alg(maze, startX, startY, endX, endY);
+    let done = false;
+    let value = null;
+    while (!done) {
+        const obj = solver.next();
+        done = obj.done;
+        value = obj.value;
+        if (fast) continue;
+        drawPath(value);
+        yield value;
+    }
+    drawPath(value);
+    return value;
+}
+
+function* visualizeGenerate(alg, maze, x, y, fast = false) {
     const generator = alg(maze, x, y);
     let done = false;
     let value = null;
@@ -122,6 +210,7 @@ function* visualize(alg, maze, x, y, fast = false) {
 function drawCell(x, y, cell) {
     const [top, right, bottom, left] = cell;
     strokeWeight(1);
+    stroke(0);
     if (top === 1) {
         line(x, y, x + pixelSize, y);
     }
@@ -136,17 +225,38 @@ function drawCell(x, y, cell) {
     }
 }
 
-function highlightCell(x, y, color = color(255, 0, 0)) {
+function highlightCell(x, y, color) {
     fill(color);
-    strokeWeight(0);
-    rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+    strokeWeight(2);
+    // rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+    point(x * pixelSize + pixelSize / 2, y * pixelSize + pixelSize / 2);
 }
 
 function drawMaze(maze) {
+    stroke(0);
     for (let i = 0; i < maze.size.width; i++) {
         for (let j = 0; j < maze.size.height; j++) {
             const cell = maze.getMaze(i, j);
             drawCell(i * pixelSize, j * pixelSize, cell);
         }
+    }
+}
+
+function drawVisited(maze) {
+    for (let i = 0; i < maze.size.width; i++) {
+        for (let j = 0; j < maze.size.height; j++) {
+            if (maze.visited[i][j]) {
+                highlightCell(i, j, color(0, 0, 255));
+            }
+        }
+    }
+}
+
+function drawPath(maze) {
+    for (let i = 0; i < maze.path.length; i++) {
+        const [x1, y1, x2, y2] = maze.path[i];
+        strokeWeight(2);
+        stroke(255, 0, 0);
+        line(x1 * pixelSize + pixelSize / 2, y1 * pixelSize + pixelSize / 2, x2 * pixelSize + pixelSize / 2, y2 * pixelSize + pixelSize / 2);
     }
 }
