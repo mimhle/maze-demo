@@ -25,11 +25,7 @@ let generator = null
 
 function draw() {
     background(255);
-    if (generator === null) {
-        generator = currentAlgorithm(JSON.parse(JSON.stringify(maze)), 0, 0);
-        return;
-    }
-    let done = generator.next().done;
+    let done = generator?.next().done;
     if (done) {
         noLoop();
         generator = null;
@@ -38,6 +34,12 @@ function draw() {
 
 function btnGenerate_Click() {
     loop();
+    generator = currentAlgorithm(
+        JSON.parse(JSON.stringify(maze)),
+        0,
+        0,
+        !document.getElementById("animateCheckbox")?.checked
+    );
 }
 
 function* randomizedDfs(maze, x, y) {
@@ -105,7 +107,7 @@ function* randomizedDfs(maze, x, y) {
 }
 
 
-function* visualizeDfs(maze, x, y) {
+function* visualizeDfs(maze, x, y, fast = false) {
     const generator = randomizedDfs(maze, x, y);
     let done = false;
     let value = null;
@@ -113,6 +115,7 @@ function* visualizeDfs(maze, x, y) {
         const obj = generator.next();
         done = obj.done;
         value = obj.value;
+        if (fast) continue;
         drawMaze(value);
         yield value;
     }
