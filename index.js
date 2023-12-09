@@ -17,7 +17,6 @@ function setup() {
     noLoop();
 }
 
-
 function draw() {
     background(255);
     let done = generator?.next().done;
@@ -32,12 +31,24 @@ function btnGenerate_Click() {
     if (generator?.next().done || generator === null) {
         maze = new Maze(width / pixelSize, height / pixelSize);
         generator = visualize(
-            randomizedDfs,
+            getGenAlg(),
             maze,
             0,
             0,
             !document.getElementById("animateCheckbox")?.checked
         );
+    }
+}
+
+function getGenAlg() {
+    const alg = document.getElementById("generateAlgorithm").value;
+    switch (alg) {
+        case "0":
+            return randomizedDfs;
+        case "1":
+            return randomizedPrims;
+        default:
+            throw new Error("Invalid algorithm");
     }
 }
 
@@ -60,6 +71,36 @@ function* randomizedDfs(maze, x, y) {
     }
     return maze;
 }
+
+function* randomizedPrims(maze, x, y) {
+    let walls = [];
+    maze.visited[x][y] = true;
+    const neighbors = maze.getUnvisitedNeighbors(x, y);
+    for (let neighbor of neighbors) {
+        walls.push([x, y, neighbor[0], neighbor[1]]);
+    }
+
+    while (walls.length > 0) {
+        let randomWall = walls[Math.floor(Math.random() * walls.length)];
+        let [x1, y1, x2, y2] = randomWall;
+        if (maze.visited[x1][y1] !== maze.visited[x2][y2]) {
+            maze.connectCells(x1, y1, x2, y2);
+            maze.visited[x1][y1] = true;
+            maze.visited[x2][y2] = true;
+            const neighbors = maze.getUnvisitedNeighbors(x2, y2);
+            for (let neighbor of neighbors) {
+                walls.push([x2, y2, neighbor[0], neighbor[1]]);
+            }
+            yield maze;
+        }
+        walls = walls.filter(wall => {
+            return maze.visited[wall[0]][wall[1]] !== maze.visited[wall[2]][wall[3]];
+        });
+    }
+    return maze;
+}
+
+
 
 
 function* visualize(alg, maze, x, y, fast = false) {

@@ -11,10 +11,10 @@ canvas {
     border: 1px solid black;
 }
 
-#input {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
+/*#input {*/
+/*    margin-top: 10px;*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
