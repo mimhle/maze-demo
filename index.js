@@ -17,8 +17,6 @@ function setup() {
     let canvas = createCanvas(width, height);
     canvas.parent("canvas");
     frameRate(60);
-
-    drawMaze(maze);
     noLoop();
 }
 
@@ -31,7 +29,7 @@ function draw() {
         generator = currentAlgorithm(JSON.parse(JSON.stringify(maze)), 0, 0);
         return;
     }
-    let {value, done} = generator.next();
+    let done = generator.next().done;
     if (done) {
         noLoop();
         generator = null;
@@ -109,7 +107,6 @@ function* randomizedDfs(maze, x, y) {
 
 function* visualizeDfs(maze, x, y) {
     const generator = randomizedDfs(maze, x, y);
-    // let {value, done} = generator.next();
     let done = false;
     let value = null;
     while (!done) {
