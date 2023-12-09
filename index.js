@@ -76,6 +76,8 @@ function getGenAlg() {
             return randomizedPrims;
         case "2":
             return wilsons;
+        case "3":
+            return aldousBroder;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -89,7 +91,7 @@ function getSolverAlg() {
         case "1":
             return bfsSolve;
         case "2":
-            return aStar;
+            return dfsWithHeuristicSolve;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -145,10 +147,25 @@ function* randomizedPrims(maze, x, y) {
 }
 
 function* wilsons(maze, x, y) {
-    // random work from x, y
-    // let randomX = Math.floor(Math.random() * maze.size.width);
-    // let randomY = Math.floor(Math.random() * maze.size.height);
-    // maze.visited[randomX][randomY] = true;
+    // TODO: Implement
+}
+
+function* aldousBroder(maze, x, y) {
+    maze.visited[x][y] = true;
+    let unvisitedCells = maze.getUnvisitedCells();
+    while (unvisitedCells.length > 0) {
+        // let [x, y] = unvisitedCells[Math.floor(Math.random() * unvisitedCells.length)];
+        let neighbors = maze.getNeighbors(x, y);
+        let randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
+        if (!maze.visited[randomNeighbor[0]][randomNeighbor[1]]) {
+            maze.connectCells(x, y, randomNeighbor[0], randomNeighbor[1]);
+            maze.visited[randomNeighbor[0]][randomNeighbor[1]] = true;
+            yield maze;
+        }
+        [x, y] = randomNeighbor;
+        unvisitedCells = maze.getUnvisitedCells();
+    }
+    return maze;
 }
 
 function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
@@ -162,6 +179,48 @@ function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze
 
         let connectedNeighbors = maze.getConnectedNeighbors(x, y);
         let foundUnvisitedNeighbor = false;
+
+        for (let neighbor of connectedNeighbors) {
+            if (!maze.visited[neighbor[0]][neighbor[1]]) {
+                stack.push(neighbor);
+                maze.visited[neighbor[0]][neighbor[1]] = true;
+                maze.path.push([x, y, neighbor[0], neighbor[1]]);
+                foundUnvisitedNeighbor = true;
+                break;
+            }
+        }
+
+        if (!foundUnvisitedNeighbor) {
+            stack.pop();
+            maze.path.pop();
+        }
+
+        yield maze;
+    }
+    return maze;
+}
+
+function* dfsWithHeuristicSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+    const heuristic = (x1, y1, x2, y2) => {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+
+    let stack = [];
+    stack.push([startX, startY]);
+    maze.visited[startX][startY] = true;
+
+    while (stack.length > 0) {
+        let [x, y] = stack.at(-1);
+        if (x === endX && y === endY) break;
+
+        let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        let foundUnvisitedNeighbor = false;
+
+        connectedNeighbors.sort((a, b) => {
+            let h1 = heuristic(a[0], a[1], endX, endY);
+            let h2 = heuristic(b[0], b[1], endX, endY);
+            return h1 - h2;
+        });
 
         for (let neighbor of connectedNeighbors) {
             if (!maze.visited[neighbor[0]][neighbor[1]]) {
@@ -204,6 +263,25 @@ function* bfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze
     return maze;
 }
 
+function* aStar(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+    // TODO: Implement
+}
+
+function* visualizeGenerate(alg, maze, x, y, fast = false) {
+    const generator = alg(maze, x, y);
+    let done = false;
+    let value = null;
+    while (!done) {
+        const obj = generator.next();
+        done = obj.done;
+        value = obj.value;
+        if (fast) continue;
+        drawMaze(value);
+        yield value;
+    }
+    drawMaze(value);
+    return value;
+}
 
 function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1, fast = false) {
     const solver = alg(maze, startX, startY, endX, endY);
@@ -220,22 +298,6 @@ function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, 
     }
     drawVisited(value);
     drawPath(value);
-    return value;
-}
-
-function* visualizeGenerate(alg, maze, x, y, fast = false) {
-    const generator = alg(maze, x, y);
-    let done = false;
-    let value = null;
-    while (!done) {
-        const obj = generator.next();
-        done = obj.done;
-        value = obj.value;
-        if (fast) continue;
-        drawMaze(value);
-        yield value;
-    }
-    drawMaze(value);
     return value;
 }
 

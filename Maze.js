@@ -80,6 +80,18 @@ class Maze {
         return false;
     };
 
+    getUnvisitedCells() {
+        let unvisited = [];
+        for (let i = 0; i < this.size.width; i++) {
+            for (let j = 0; j < this.size.height; j++) {
+                if (!this.visited[i][j]) {
+                    unvisited.push([i, j]);
+                }
+            }
+        }
+        return unvisited;
+    }
+
     getNeighbors(x, y) {
         let neighbors = [];
         if (x > 0) {
