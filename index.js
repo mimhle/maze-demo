@@ -43,8 +43,8 @@ function btnGenerate_Click() {
         generator = visualizeGenerate(
             getGenAlg(),
             maze,
-            0,
-            0,
+            Math.floor(Math.random() * maze.size.width),
+            Math.floor(Math.random() * maze.size.height),
             !document.getElementById("animateCheckbox")?.checked
         );
     }
@@ -87,7 +87,7 @@ function getSolverAlg() {
         case "0":
             return dfsSolve;
         case "1":
-            return bfs;
+            return bfsSolve;
         case "2":
             return aStar;
         default:
@@ -151,21 +151,50 @@ function* wilsons(maze, x, y) {
     // maze.visited[randomX][randomY] = true;
 }
 
-
 function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
     let stack = [];
     stack.push([startX, startY]);
     maze.visited[startX][startY] = true;
 
     while (stack.length > 0) {
-        let [x, y] = stack.pop();
-        if (x === endX && y === endY) {
-            break;
-        }
+        let [x, y] = stack.at(-1);
+        if (x === endX && y === endY) break;
+
         let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        let foundUnvisitedNeighbor = false;
+
         for (let neighbor of connectedNeighbors) {
             if (!maze.visited[neighbor[0]][neighbor[1]]) {
                 stack.push(neighbor);
+                maze.visited[neighbor[0]][neighbor[1]] = true;
+                maze.path.push([x, y, neighbor[0], neighbor[1]]);
+                foundUnvisitedNeighbor = true;
+                break;
+            }
+        }
+
+        if (!foundUnvisitedNeighbor) {
+            stack.pop();
+            maze.path.pop();
+        }
+
+        yield maze;
+    }
+    return maze;
+}
+
+function* bfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+    let queue = [];
+    queue.push([startX, startY]);
+    maze.visited[startX][startY] = true;
+
+    while (queue.length > 0) {
+        let [x, y] = queue.shift();
+        if (x === endX && y === endY) break;
+        let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        for (let neighbor of connectedNeighbors) {
+            if (!maze.visited[neighbor[0]][neighbor[1]]) {
+                queue.push(neighbor);
                 maze.visited[neighbor[0]][neighbor[1]] = true;
                 maze.path.push([x, y, neighbor[0], neighbor[1]]);
             }
@@ -174,6 +203,7 @@ function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze
     }
     return maze;
 }
+
 
 function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1, fast = false) {
     const solver = alg(maze, startX, startY, endX, endY);
@@ -184,9 +214,11 @@ function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, 
         done = obj.done;
         value = obj.value;
         if (fast) continue;
+        drawVisited(value);
         drawPath(value);
         yield value;
     }
+    drawVisited(value);
     drawPath(value);
     return value;
 }
