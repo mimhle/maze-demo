@@ -14,8 +14,8 @@ function setup() {
     pixelDensity(1);
     let canvas = createCanvas(width, height);
     canvas.parent("canvas");
+    document.getElementById("canvas").oncontextmenu = () => false;
     frameRate(60);
-    noLoop();
 }
 
 function draw() {
@@ -23,21 +23,73 @@ function draw() {
     if (generator) {
         const done = generator?.next().done;
         if (done) {
-            noLoop();
             generator = null;
         }
     } else if (solver) {
-        drawMaze(maze);
         const done = solver?.next().done;
         if (done) {
-            noLoop();
             solver = null;
         }
+    } else {
+        if (mouseIsPressed) {
+            const leftWall = Math.floor(mouseX / pixelSize) * pixelSize;
+            const topWall = Math.floor(mouseY / pixelSize) * pixelSize;
+            const rightWall = leftWall + pixelSize;
+            const bottomWall = topWall + pixelSize;
+            const x = Math.floor(mouseX / pixelSize);
+            const y = Math.floor(mouseY / pixelSize);
+            const tolerance = pixelSize / 3;
+
+            if (!(x < 0 || x >= maze.size.width || y < 0 || y >= maze.size.height)) {
+                if (
+                    mouseX - leftWall < rightWall - mouseX
+                    && mouseX - leftWall < tolerance
+                    && x - 1 >= 0
+                    && x - 1 < maze.size.width
+                ) {
+                    if (mouseButton === RIGHT) maze.connectCells(x, y, x - 1, y);
+                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x - 1, y);
+                }
+                // if mouse is closer to right wall than left wall
+                else if (
+                    rightWall - mouseX < mouseX - leftWall
+                    && rightWall - mouseX < tolerance
+                    && x + 1 < maze.size.width
+                    && x + 1 >= 0
+                ) {
+                    if (mouseButton === RIGHT) maze.connectCells(x, y, x + 1, y);
+                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x + 1, y);
+
+                }
+                // if mouse is closer to top wall than bottom wall
+                else if (
+                    mouseY - topWall < bottomWall - mouseY
+                    && mouseY - topWall < tolerance
+                    && y - 1 >= 0
+                    && y - 1 < maze.size.height
+                ) {
+                    if (mouseButton === RIGHT) maze.connectCells(x, y, x, y - 1);
+                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x, y - 1);
+                }
+                // if mouse is closer to bottom wall than top wall
+                else if (
+                    bottomWall - mouseY < mouseY - topWall
+                    && bottomWall - mouseY < tolerance
+                    && y + 1 < maze.size.height
+                    && y + 1 >= 0
+                ) {
+                    if (mouseButton === RIGHT) maze.connectCells(x, y, x, y + 1);
+                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x, y + 1);
+                }
+            }
+        }
+        drawMaze(maze);
+        drawVisited(maze);
+        drawPath(maze);
     }
 }
 
 function btnGenerate_Click() {
-    loop();
     if ((generator?.next().done || generator === null) && (solver?.next().done || solver === null)) {
         maze = new Maze(width / pixelSize, height / pixelSize);
         generator = visualizeGenerate(
@@ -50,8 +102,19 @@ function btnGenerate_Click() {
     }
 }
 
+function btnClear_Click() {
+    maze = new Maze(width / pixelSize, height / pixelSize, false);
+    generator = null;
+    solver = null;
+}
+
+function btnFill_Click() {
+    maze = new Maze(width / pixelSize, height / pixelSize, true);
+    generator = null;
+    solver = null;
+}
+
 function btnSolve_Click() {
-    loop();
     if ((solver?.next().done || solver === null) && (generator?.next().done || generator === null)) {
         maze.resetVisited();
         maze.resetPath();
@@ -79,6 +142,7 @@ function* visualizeGenerate(alg, maze, x, y, fast = false) {
         drawMaze(value);
         yield value;
     }
+    value?.resetVisited();
     drawMaze(value);
     return value;
 }
@@ -92,10 +156,12 @@ function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, 
         done = obj.done;
         value = obj.value;
         if (fast) continue;
+        drawMaze(value);
         drawVisited(value);
         drawPath(value);
         yield value;
     }
+    drawMaze(value);
     drawVisited(value);
     drawPath(value);
     return value;
@@ -121,11 +187,12 @@ function drawCell(x, y, cell) {
 
 function highlightCell(x, y, color) {
     fill(color);
-    strokeWeight(2);
+    stroke(color);
+    strokeWeight(pixelSize / 3);
     point(x * pixelSize + pixelSize / 2, y * pixelSize + pixelSize / 2);
 }
 
-function drawMaze(maze) {
+function drawMaze() {
     stroke(0);
     for (let i = 0; i < maze.size.width; i++) {
         for (let j = 0; j < maze.size.height; j++) {
@@ -139,7 +206,7 @@ function drawVisited(maze) {
     for (let i = 0; i < maze.size.width; i++) {
         for (let j = 0; j < maze.size.height; j++) {
             if (maze.visited[i][j]) {
-                highlightCell(i, j, color(0, 0, 255));
+                highlightCell(i, j, color(200));
             }
         }
     }

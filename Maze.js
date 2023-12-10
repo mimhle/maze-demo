@@ -1,5 +1,5 @@
 class Maze {
-    constructor(width, height) {
+    constructor(width, height, walls = true) {
         this.start = null;
         this.end = null;
         this.size = {
@@ -9,7 +9,7 @@ class Maze {
 
         this.maze = new Array(width).fill(0).map(
             () => new Array(height).fill(0).map(
-                () => [1, 1, 1, 1] // [top, right, bottom, left]
+                () => walls ? [1, 1, 1, 1] : [0, 0, 0, 0] // [top, right, bottom, left]
             )
         );
         this.visited = new Array(width).fill(0).map(
@@ -37,27 +37,43 @@ class Maze {
     }
 
     connectCells(x1, y1, x2, y2) {
-        // neighbor is on the top
         if (x1 === x2 && y1 > y2) {
+            // neighbor is on the top
             this.maze[x1][y1][0] = 0;
             this.maze[x2][y2][2] = 0;
-        }
-        // neighbor is on the bottom
-        else if (x1 === x2 && y1 < y2) {
+        } else if (x1 === x2 && y1 < y2) {
+            // neighbor is on the bottom
             this.maze[x1][y1][2] = 0;
             this.maze[x2][y2][0] = 0;
-        }
-        // neighbor is on the left
-        else if (x1 > x2 && y1 === y2) {
+        } else if (x1 > x2 && y1 === y2) {
+            // neighbor is on the left
             this.maze[x1][y1][3] = 0;
             this.maze[x2][y2][1] = 0;
-        }
-        // neighbor is on the right
-        else if (x1 < x2 && y1 === y2) {
+        } else if (x1 < x2 && y1 === y2) {
+            // neighbor is on the right
             this.maze[x1][y1][1] = 0;
             this.maze[x2][y2][3] = 0;
         }
-        return maze;
+    };
+
+    disconnectCells(x1, y1, x2, y2) {
+        if (x1 === x2 && y1 > y2) {
+            // neighbor is on the top
+            this.maze[x1][y1][0] = 1;
+            this.maze[x2][y2][2] = 1;
+        } else if (x1 === x2 && y1 < y2) {
+            // neighbor is on the bottom
+            this.maze[x1][y1][2] = 1;
+            this.maze[x2][y2][0] = 1;
+        } else if (x1 > x2 && y1 === y2) {
+            // neighbor is on the left
+            this.maze[x1][y1][3] = 1;
+            this.maze[x2][y2][1] = 1;
+        } else if (x1 < x2 && y1 === y2) {
+            // neighbor is on the right
+            this.maze[x1][y1][1] = 1;
+            this.maze[x2][y2][3] = 1;
+        }
     };
 
     isConnected(x1, y1, x2, y2) {
