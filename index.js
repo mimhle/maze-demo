@@ -31,61 +31,70 @@ function draw() {
             solver = null;
         }
     } else {
-        if (mouseIsPressed) {
-            const leftWall = Math.floor(mouseX / pixelSize) * pixelSize;
-            const topWall = Math.floor(mouseY / pixelSize) * pixelSize;
-            const rightWall = leftWall + pixelSize;
-            const bottomWall = topWall + pixelSize;
-            const x = Math.floor(mouseX / pixelSize);
-            const y = Math.floor(mouseY / pixelSize);
-            const tolerance = pixelSize / 3;
-
-            if (!(x < 0 || x >= maze.size.width || y < 0 || y >= maze.size.height)) {
-                if (
-                    mouseX - leftWall < rightWall - mouseX
-                    && mouseX - leftWall < tolerance
-                    && x - 1 >= 0
-                    && x - 1 < maze.size.width
-                ) {
-                    if (mouseButton === RIGHT) maze.connectCells(x, y, x - 1, y);
-                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x - 1, y);
-                }
-                // if mouse is closer to right wall than left wall
-                else if (
-                    rightWall - mouseX < mouseX - leftWall
-                    && rightWall - mouseX < tolerance
-                    && x + 1 < maze.size.width
-                    && x + 1 >= 0
-                ) {
-                    if (mouseButton === RIGHT) maze.connectCells(x, y, x + 1, y);
-                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x + 1, y);
-
-                }
-                // if mouse is closer to top wall than bottom wall
-                else if (
-                    mouseY - topWall < bottomWall - mouseY
-                    && mouseY - topWall < tolerance
-                    && y - 1 >= 0
-                    && y - 1 < maze.size.height
-                ) {
-                    if (mouseButton === RIGHT) maze.connectCells(x, y, x, y - 1);
-                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x, y - 1);
-                }
-                // if mouse is closer to bottom wall than top wall
-                else if (
-                    bottomWall - mouseY < mouseY - topWall
-                    && bottomWall - mouseY < tolerance
-                    && y + 1 < maze.size.height
-                    && y + 1 >= 0
-                ) {
-                    if (mouseButton === RIGHT) maze.connectCells(x, y, x, y + 1);
-                    else if (mouseButton === LEFT) maze.disconnectCells(x, y, x, y + 1);
-                }
-            }
-        }
         drawMaze(maze);
         drawVisited(maze);
         drawPath(maze);
+        addAndRemoveWalls();
+    }
+}
+
+function addAndRemoveWalls() {
+    stroke(0, 0, 100, 100);
+    strokeWeight(pixelSize / 4);
+    const leftWall = Math.floor(mouseX / pixelSize) * pixelSize;
+    const topWall = Math.floor(mouseY / pixelSize) * pixelSize;
+    const rightWall = leftWall + pixelSize;
+    const bottomWall = topWall + pixelSize;
+    const x = Math.floor(mouseX / pixelSize);
+    const y = Math.floor(mouseY / pixelSize);
+    const tolerance = pixelSize / 3;
+    if (!(x < 0 || x >= maze.size.width || y < 0 || y >= maze.size.height)) {
+        if (
+            mouseX - leftWall < rightWall - mouseX
+            && mouseX - leftWall < tolerance
+            && x - 1 >= 0
+            && x - 1 < maze.size.width
+        ) {
+            // line(x * pixelSize, y * pixelSize + pixelSize, x * pixelSize + pixelSize, y * pixelSize + pixelSize);
+            line(x * pixelSize, y * pixelSize, x * pixelSize, y * pixelSize + pixelSize);
+            if (mouseIsPressed && mouseButton === RIGHT) maze.connectCells(x, y, x - 1, y);
+            else if (mouseIsPressed && mouseButton === LEFT) maze.disconnectCells(x, y, x - 1, y);
+        }
+        // if mouse is closer to right wall than left wall
+        else if (
+            rightWall - mouseX < mouseX - leftWall
+            && rightWall - mouseX < tolerance
+            && x + 1 < maze.size.width
+            && x + 1 >= 0
+        ) {
+            // line(x * pixelSize, y * pixelSize + pixelSize, x * pixelSize + pixelSize, y * pixelSize + pixelSize);
+            line(x * pixelSize + pixelSize, y * pixelSize, x * pixelSize + pixelSize, y * pixelSize + pixelSize);
+            if (mouseIsPressed && mouseButton === RIGHT) maze.connectCells(x, y, x + 1, y);
+            else if (mouseIsPressed && mouseButton === LEFT) maze.disconnectCells(x, y, x + 1, y);
+
+        }
+        // if mouse is closer to top wall than bottom wall
+        else if (
+            mouseY - topWall < bottomWall - mouseY
+            && mouseY - topWall < tolerance
+            && y - 1 >= 0
+            && y - 1 < maze.size.height
+        ) {
+            line(x * pixelSize, y * pixelSize, x * pixelSize + pixelSize, y * pixelSize);
+            if (mouseIsPressed && mouseButton === RIGHT) maze.connectCells(x, y, x, y - 1);
+            else if (mouseIsPressed && mouseButton === LEFT) maze.disconnectCells(x, y, x, y - 1);
+        }
+        // if mouse is closer to bottom wall than top wall
+        else if (
+            bottomWall - mouseY < mouseY - topWall
+            && bottomWall - mouseY < tolerance
+            && y + 1 < maze.size.height
+            && y + 1 >= 0
+        ) {
+            line(x * pixelSize, y * pixelSize + pixelSize, x * pixelSize + pixelSize, y * pixelSize + pixelSize);
+            if (mouseIsPressed && mouseButton === RIGHT) maze.connectCells(x, y, x, y + 1);
+            else if (mouseIsPressed && mouseButton === LEFT) maze.disconnectCells(x, y, x, y + 1);
+        }
     }
 }
 
