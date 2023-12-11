@@ -106,43 +106,6 @@ function drawStartEnd() {
     highlightCell(endX, endY, color(255, 0, 0));
 }
 
-function btnGenerate_Click() {
-    if ((generator?.next().done || generator === null) && (solver?.next().done || solver === null)) {
-        maze = new Maze(width / pixelSize, height / pixelSize);
-        generator = visualizeGenerate(
-            getGenAlg(),
-            maze,
-            Math.floor(Math.random() * maze.size.width),
-            Math.floor(Math.random() * maze.size.height),
-            !document.getElementById("animateCheckbox")?.checked
-        );
-    }
-}
-
-function btnClear_Click() {
-    maze = new Maze(width / pixelSize, height / pixelSize, false);
-    generator = null;
-    solver = null;
-}
-
-function btnFill_Click() {
-    maze = new Maze(width / pixelSize, height / pixelSize, true);
-    generator = null;
-    solver = null;
-}
-
-function btnSolve_Click() {
-    if ((solver?.next().done || solver === null) && (generator?.next().done || generator === null)) {
-        maze.resetVisited();
-        maze.resetPath();
-        solver = visualizeSolve(
-            getSolverAlg(),
-            maze,
-            !document.getElementById("animateCheckbox")?.checked
-        );
-    }
-}
-
 function drawCell(x, y, cell) {
     const [top, right, bottom, left] = cell;
     strokeWeight(1);
@@ -194,5 +157,42 @@ function drawPath(maze) {
         strokeWeight(2);
         stroke(255, 0, 0);
         line(x1 * pixelSize + pixelSize / 2, y1 * pixelSize + pixelSize / 2, x2 * pixelSize + pixelSize / 2, y2 * pixelSize + pixelSize / 2);
+    }
+}
+
+function btnGenerate_Click() {
+    if ((generator?.next().done || generator === null) && (solver?.next().done || solver === null)) {
+        maze = new Maze(width / pixelSize, height / pixelSize);
+        generator = visualizeGenerate(
+            getGenAlg(),
+            maze,
+            Math.floor(Math.random() * maze.size.width),
+            Math.floor(Math.random() * maze.size.height),
+            !document.getElementById("animateCheckbox")?.checked
+        );
+    }
+}
+
+function btnClear_Click() {
+    maze = new Maze(width / pixelSize, height / pixelSize, false);
+    generator = null;
+    solver = null;
+}
+
+function btnFill_Click() {
+    maze = new Maze(width / pixelSize, height / pixelSize, true);
+    generator = null;
+    solver = null;
+}
+
+function btnSolve_Click() {
+    if ((solver?.next().done || solver === null) && (generator?.next().done || generator === null)) {
+        maze.resetVisited();
+        maze.resetPath();
+        solver = visualizeSolve(
+            getSolverAlg(),
+            maze,
+            !document.getElementById("animateCheckbox")?.checked
+        );
     }
 }
