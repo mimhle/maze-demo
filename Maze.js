@@ -36,6 +36,16 @@ class Maze {
         this.path = [];
     }
 
+    reset(walls = true) {
+        this.resetVisited();
+        this.resetPath();
+        this.maze = new Array(this.size.width).fill(0).map(
+            () => new Array(this.size.height).fill(0).map(
+                () => walls ? [1, 1, 1, 1] : [0, 0, 0, 0] // [top, right, bottom, left]
+            )
+        );
+    }
+
     connectCells(x1, y1, x2, y2) {
         if (x1 === x2 && y1 > y2) {
             // neighbor is on the top

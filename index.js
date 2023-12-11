@@ -6,6 +6,9 @@ if (width % pixelSize !== 0 || height % pixelSize !== 0) {
     throw new Error("width and height must be divisible by pixelSize");
 }
 
+let placeStart = false;
+let placeEnd = false;
+
 let maze = new Maze(width / pixelSize, height / pixelSize)
 let generator = null
 let solver = null
@@ -34,7 +37,27 @@ function draw() {
         drawMaze(maze);
         drawVisited(maze);
         drawPath(maze);
-        drawWallHighlight();
+
+        const x = Math.floor(mouseX / pixelSize);
+        const y = Math.floor(mouseY / pixelSize);
+        if (placeStart) {
+            highlightCell(x, y, color(0, 255, 0));
+            if (mouseIsPressed && mouseButton === LEFT && x >= 0 && x < maze.size.width && y >= 0 && y < maze.size.height) {
+                maze.start = [x, y];
+                placeStart = false;
+            }
+        } else if (placeEnd) {
+            highlightCell(x, y, color(255, 0, 0));
+            if (mouseIsPressed && mouseButton === LEFT && x >= 0 && x < maze.size.width && y >= 0 && y < maze.size.height) {
+                maze.end = [x, y];
+                placeEnd = false;
+            }
+        } else {
+            drawWallHighlight();
+        }
+
+        document.getElementById("btnPlaceStart").disabled = placeEnd;
+        document.getElementById("btnPlaceEnd").disabled = placeStart;
     }
     drawStartEnd();
 }
@@ -162,7 +185,7 @@ function drawPath(maze) {
 
 function btnGenerate_Click() {
     if ((generator?.next().done || generator === null) && (solver?.next().done || solver === null)) {
-        maze = new Maze(width / pixelSize, height / pixelSize);
+        maze.reset();
         generator = visualizeGenerate(
             getGenAlg(),
             maze,
@@ -174,13 +197,13 @@ function btnGenerate_Click() {
 }
 
 function btnClear_Click() {
-    maze = new Maze(width / pixelSize, height / pixelSize, false);
+    maze.reset(false);
     generator = null;
     solver = null;
 }
 
 function btnFill_Click() {
-    maze = new Maze(width / pixelSize, height / pixelSize, true);
+    maze.reset();
     generator = null;
     solver = null;
 }
@@ -195,4 +218,14 @@ function btnSolve_Click() {
             !document.getElementById("animateCheckbox")?.checked
         );
     }
+}
+
+function btnPlaceStart_Click() {
+    placeStart = !placeStart;
+    placeEnd = false;
+}
+
+function btnPlaceEnd_Click() {
+    placeEnd = !placeEnd;
+    placeStart = false;
 }
