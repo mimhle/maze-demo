@@ -4,11 +4,13 @@ function getSolverAlg() {
         case "0":
             return dfsSolve;
         case "1":
-            return bfsSolve;
+            return dfsWithHeuristicEuclidianSolve;
         case "2":
-            return dfsWithHeuristicSolve;
+            return dfsWithHeuristicManhattanSolve;
         case "3":
             return dfsRandomizedSolve;
+        case "4":
+            return bfsSolve;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -69,7 +71,52 @@ function* dfsSolve(maze) {
     return maze;
 }
 
-function* dfsWithHeuristicSolve(maze) {
+function* dfsWithHeuristicEuclidianSolve(maze) {
+    const heuristic = (x1, y1, x2, y2) => {
+        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+
+    let stack = [];
+    stack.push([startX, startY]);
+    maze.visited[startX][startY] = true;
+
+    while (stack.length > 0) {
+        let [x, y] = stack.at(-1);
+        if (x === endX && y === endY) break;
+
+        let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        let foundUnvisitedNeighbor = false;
+
+        connectedNeighbors.sort((a, b) => {
+            let h1 = heuristic(a[0], a[1], endX, endY);
+            let h2 = heuristic(b[0], b[1], endX, endY);
+            return h1 - h2;
+        });
+
+        for (let neighbor of connectedNeighbors) {
+            if (!maze.visited[neighbor[0]][neighbor[1]]) {
+                stack.push(neighbor);
+                maze.visited[neighbor[0]][neighbor[1]] = true;
+                maze.path.push([x, y, neighbor[0], neighbor[1]]);
+                foundUnvisitedNeighbor = true;
+                break;
+            }
+        }
+
+        if (!foundUnvisitedNeighbor) {
+            stack.pop();
+            maze.path.pop();
+        }
+
+        yield maze;
+    }
+    return maze;
+}
+
+function* dfsWithHeuristicManhattanSolve(maze) {
     const heuristic = (x1, y1, x2, y2) => {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
