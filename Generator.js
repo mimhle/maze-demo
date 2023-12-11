@@ -14,6 +14,23 @@ function getGenAlg() {
     }
 }
 
+function* visualizeGenerate(alg, maze, x, y, fast = false) {
+    const generator = alg(maze, x, y);
+    let done = false;
+    let value = null;
+    while (!done) {
+        const obj = generator.next();
+        done = obj.done;
+        value = obj.value;
+        if (fast) continue;
+        drawMaze(value);
+        yield value;
+    }
+    value?.resetVisited();
+    drawMaze(value);
+    return value;
+}
+
 function* randomizedDfs(maze, x, y) {
     let stack = [];
     stack.push([x, y]);

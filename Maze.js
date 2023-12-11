@@ -1,7 +1,7 @@
 class Maze {
     constructor(width, height, walls = true) {
-        this.start = null;
-        this.end = null;
+        this.start = [0, 0];
+        this.end = [width - 1, height - 1];
         this.size = {
             width: width,
             height: height

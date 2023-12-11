@@ -34,11 +34,12 @@ function draw() {
         drawMaze(maze);
         drawVisited(maze);
         drawPath(maze);
-        addAndRemoveWalls();
+        drawWallHighlight();
     }
+    drawStartEnd();
 }
 
-function addAndRemoveWalls() {
+function drawWallHighlight() {
     stroke(0, 0, 100, 100);
     strokeWeight(pixelSize / 4);
     const leftWall = Math.floor(mouseX / pixelSize) * pixelSize;
@@ -98,6 +99,13 @@ function addAndRemoveWalls() {
     }
 }
 
+function drawStartEnd() {
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+    highlightCell(startX, startY, color(0, 255, 0));
+    highlightCell(endX, endY, color(255, 0, 0));
+}
+
 function btnGenerate_Click() {
     if ((generator?.next().done || generator === null) && (solver?.next().done || solver === null)) {
         maze = new Maze(width / pixelSize, height / pixelSize);
@@ -130,50 +138,9 @@ function btnSolve_Click() {
         solver = visualizeSolve(
             getSolverAlg(),
             maze,
-            0,
-            0,
-            maze.size.width - 1,
-            maze.size.height - 1,
             !document.getElementById("animateCheckbox")?.checked
         );
     }
-}
-
-function* visualizeGenerate(alg, maze, x, y, fast = false) {
-    const generator = alg(maze, x, y);
-    let done = false;
-    let value = null;
-    while (!done) {
-        const obj = generator.next();
-        done = obj.done;
-        value = obj.value;
-        if (fast) continue;
-        drawMaze(value);
-        yield value;
-    }
-    value?.resetVisited();
-    drawMaze(value);
-    return value;
-}
-
-function* visualizeSolve(alg, maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1, fast = false) {
-    const solver = alg(maze, startX, startY, endX, endY);
-    let done = false;
-    let value = null;
-    while (!done) {
-        const obj = solver.next();
-        done = obj.done;
-        value = obj.value;
-        if (fast) continue;
-        drawMaze(value);
-        drawVisited(value);
-        drawPath(value);
-        yield value;
-    }
-    drawMaze(value);
-    drawVisited(value);
-    drawPath(value);
-    return value;
 }
 
 function drawCell(x, y, cell) {

@@ -14,7 +14,30 @@ function getSolverAlg() {
     }
 }
 
-function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+function* visualizeSolve(alg, maze, fast = false) {
+    const solver = alg(maze);
+    let done = false;
+    let value = null;
+    while (!done) {
+        const obj = solver.next();
+        done = obj.done;
+        value = obj.value;
+        if (fast) continue;
+        drawMaze(value);
+        drawVisited(value);
+        drawPath(value);
+        yield value;
+    }
+    drawMaze(value);
+    drawVisited(value);
+    drawPath(value);
+    return value;
+}
+
+function* dfsSolve(maze) {
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+
     let stack = [];
     stack.push([startX, startY]);
     maze.visited[startX][startY] = true;
@@ -46,10 +69,13 @@ function* dfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze
     return maze;
 }
 
-function* dfsWithHeuristicSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+function* dfsWithHeuristicSolve(maze) {
     const heuristic = (x1, y1, x2, y2) => {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
+
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
 
     let stack = [];
     stack.push([startX, startY]);
@@ -88,7 +114,10 @@ function* dfsWithHeuristicSolve(maze, startX, startY, endX = maze.size.width - 1
     return maze;
 }
 
-function* dfsRandomizedSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+function* dfsRandomizedSolve(maze) {
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+
     let stack = [];
     stack.push([startX, startY]);
     maze.visited[startX][startY] = true;
@@ -124,7 +153,10 @@ function* dfsRandomizedSolve(maze, startX, startY, endX = maze.size.width - 1, e
     return maze;
 }
 
-function* bfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+function* bfsSolve(maze) {
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+
     let queue = [];
     queue.push([startX, startY]);
     maze.visited[startX][startY] = true;
@@ -145,6 +177,6 @@ function* bfsSolve(maze, startX, startY, endX = maze.size.width - 1, endY = maze
     return maze;
 }
 
-function* aStar(maze, startX, startY, endX = maze.size.width - 1, endY = maze.size.height - 1) {
+function* aStar(maze) {
     // TODO: Implement
 }
