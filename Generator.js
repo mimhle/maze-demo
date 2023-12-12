@@ -100,3 +100,7 @@ function* aldousBroder(maze, x, y) {
     }
     return maze;
 }
+
+function* recursiveDivision(maze, x, y) {
+    // TODO: Implement
+}

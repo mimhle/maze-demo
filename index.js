@@ -227,6 +227,12 @@ function btnSolve_Click() {
     }
 }
 
+function btnGenerateAndSolve_Click() {
+    btnGenerate_Click();
+    while (!generator?.next().done) { }
+    btnSolve_Click();
+}
+
 function btnPlaceStart_Click() {
     placeStart = !placeStart;
     placeEnd = false;
