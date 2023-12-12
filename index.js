@@ -184,7 +184,11 @@ function drawPath(maze) {
     for (let i = 0; i < maze.path.length; i++) {
         const [x1, y1, x2, y2] = maze.path[i];
         strokeWeight(2);
-        stroke(255, 0, 0);
+        if (i === maze.path.length - 1) {
+            stroke(0, 0, 255);
+        } else {
+            stroke(255, 0, 0);
+        }
         line(x1 * pixelSize + pixelSize / 2, y1 * pixelSize + pixelSize / 2, x2 * pixelSize + pixelSize / 2, y2 * pixelSize + pixelSize / 2);
     }
 }

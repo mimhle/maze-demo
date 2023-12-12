@@ -31,12 +31,12 @@ function* visualizeSolve(alg, maze, fast = false) {
         if (fast) continue;
         drawMaze(value);
         drawVisited(value);
-        drawPath(value);
+        drawPath(maze);
         yield value;
     }
     drawMaze(value);
     drawVisited(value);
-    drawPath(value);
+    drawPath(maze);
     return value;
 }
 
