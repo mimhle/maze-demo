@@ -87,6 +87,7 @@ class Maze {
     };
 
     isConnected(x1, y1, x2, y2) {
+        if (x1 < 0 || x1 >= this.size.width || y1 < 0 || y1 >= this.size.height) return false;
         // neighbor is on the top
         if (x1 === x2 && y1 > y2) {
             return this.maze[x1][y1][0] === 0 && this.maze[x2][y2][2] === 0;

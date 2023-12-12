@@ -15,6 +15,8 @@ function getSolverAlg() {
             return aStarEuclideanSolve;
         case "6":
             return aStarManhattanSolve;
+        case "7":
+            return leftHandRule;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -282,4 +284,8 @@ function* aStarManhattanSolve(maze) {
         yield maze;
     }
     return maze;
+}
+
+function* leftHandRule(maze) {
+    // TODO: Implement
 }

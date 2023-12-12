@@ -22,7 +22,7 @@ class PriorityQueue {
         return this.queue.shift();
     }
 
-    top() {
+    front() {
         return this.queue[0];
     }
 
