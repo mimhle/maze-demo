@@ -12,9 +12,9 @@ function getSolverAlg() {
         case "4":
             return bfsSolve;
         case "5":
-            return aStarEuclidean;
+            return aStarEuclideanSolve;
         case "6":
-            return aStarManhattan;
+            return aStarManhattanSolve;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -228,7 +228,7 @@ function* bfsSolve(maze) {
     return maze;
 }
 
-function* aStarEuclidean(maze) {
+function* aStarEuclideanSolve(maze) {
     const heuristic = (x1, y1, x2, y2) => {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
@@ -256,7 +256,7 @@ function* aStarEuclidean(maze) {
     return maze;
 }
 
-function* aStarManhattan(maze) {
+function* aStarManhattanSolve(maze) {
     const heuristic = (x1, y1, x2, y2) => {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
