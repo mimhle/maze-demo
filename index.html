@@ -22,20 +22,23 @@
     <select id="generateAlgorithm">
         <option value="0">Randomized Depth-First Search</option>
         <option value="1">Randomized Prim's Algorithm</option>
-        <option value="2">Wilson's Algorithm</option>
+        <option value="2">Wilson's Algorithm (in progress)</option>
         <option value="3">Aldous-Broder Algorithm</option>
     </select>
     <label for="solveAlgorithm"> Solve algorithm </label>
     <select id="solveAlgorithm">
         <option value="0">Depth-First Search</option>
-        <option value="1">Depth-First Search (with heuristic, Euclidian distance)</option>
+        <option value="1">Depth-First Search (with heuristic, Euclidean distance)</option>
         <option value="2">Depth-First Search (with heuristic, Manhattan distance)</option>
         <option value="3">Depth-First Search (randomized)</option>
         <option value="4">Breadth-First Search</option>
+        <option value="5">A* Search (Euclidean distance)</option>
+        <option value="6">A* Search (Manhattan distance)</option>
     </select>
     <button id="btnPlaceStart" onclick="btnPlaceStart_Click()">Place Start</button>
     <button id="btnPlaceEnd" onclick="btnPlaceEnd_Click()">Place End</button>
     <button id="btnSolve" onclick="btnSolve_Click()">Solve</button>
+    <i id="status"></i>
 
 </div>
 </body>

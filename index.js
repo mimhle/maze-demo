@@ -60,6 +60,10 @@ function draw() {
         document.getElementById("btnPlaceEnd").disabled = placeStart;
     }
     drawStartEnd();
+
+    if (maze.visited.flat().filter(x => x).length !== 0) {
+        document.getElementById("status").innerHTML = `Visited: ${maze.visited.flat().filter(x => x).length} / ${maze.size.width * maze.size.height}`;
+    }
 }
 
 function drawWallHighlight() {

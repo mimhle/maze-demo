@@ -4,13 +4,17 @@ function getSolverAlg() {
         case "0":
             return dfsSolve;
         case "1":
-            return dfsWithHeuristicEuclidianSolve;
+            return dfsWithHeuristicEuclideanSolve;
         case "2":
             return dfsWithHeuristicManhattanSolve;
         case "3":
             return dfsRandomizedSolve;
         case "4":
             return bfsSolve;
+        case "5":
+            return aStarEuclidean;
+        case "6":
+            return aStarManhattan;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -71,7 +75,7 @@ function* dfsSolve(maze) {
     return maze;
 }
 
-function* dfsWithHeuristicEuclidianSolve(maze) {
+function* dfsWithHeuristicEuclideanSolve(maze) {
     const heuristic = (x1, y1, x2, y2) => {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
@@ -224,6 +228,91 @@ function* bfsSolve(maze) {
     return maze;
 }
 
-function* aStar(maze) {
-    // TODO: Implement
+class PriorityQueue {
+    constructor() {
+        this.queue = [];
+    }
+
+    enqueue(element, priority) {
+        let obj = {element, priority};
+        let added = false;
+        for (let i = 0; i < this.queue.length; i++) {
+            if (priority < this.queue[i].priority) {
+                this.queue.splice(i, 0, obj);
+                added = true;
+                break;
+            }
+        }
+        if (!added) {
+            this.queue.push(obj);
+        }
+    }
+
+    dequeue() {
+        return this.queue.shift();
+    }
+
+    top() {
+        return this.queue[0];
+    }
+
+    isEmpty() {
+        return this.queue.length === 0;
+    }
+}
+
+function* aStarEuclidean(maze) {
+    const heuristic = (x1, y1, x2, y2) => {
+        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+
+    let queue = new PriorityQueue();
+    queue.enqueue([startX, startY], 0);
+    maze.visited[startX][startY] = true;
+
+    while (!queue.isEmpty()) {
+        let [x, y] = queue.dequeue().element;
+        if (x === endX && y === endY) break;
+        let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        for (let neighbor of connectedNeighbors) {
+            if (!maze.visited[neighbor[0]][neighbor[1]]) {
+                queue.enqueue(neighbor, heuristic(neighbor[0], neighbor[1], endX, endY));
+                maze.visited[neighbor[0]][neighbor[1]] = true;
+                maze.path.push([x, y, neighbor[0], neighbor[1]]);
+            }
+        }
+        yield maze;
+    }
+    return maze;
+}
+
+function* aStarManhattan(maze) {
+    const heuristic = (x1, y1, x2, y2) => {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+
+    const [startX, startY] = maze.start;
+    const [endX, endY] = maze.end;
+
+    let queue = new PriorityQueue();
+    queue.enqueue([startX, startY], 0);
+    maze.visited[startX][startY] = true;
+
+    while (!queue.isEmpty()) {
+        let [x, y] = queue.dequeue().element;
+        if (x === endX && y === endY) break;
+        let connectedNeighbors = maze.getConnectedNeighbors(x, y);
+        for (let neighbor of connectedNeighbors) {
+            if (!maze.visited[neighbor[0]][neighbor[1]]) {
+                queue.enqueue(neighbor, heuristic(neighbor[0], neighbor[1], endX, endY));
+                maze.visited[neighbor[0]][neighbor[1]] = true;
+                maze.path.push([x, y, neighbor[0], neighbor[1]]);
+            }
+        }
+        yield maze;
+    }
+    return maze;
 }
