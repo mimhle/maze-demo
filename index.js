@@ -19,6 +19,8 @@ function setup() {
     canvas.parent("canvas");
     document.getElementById("canvas").oncontextmenu = () => false;
     frameRate(60);
+
+    document.getElementById("status").innerHTML = `Visited: ${maze.visited.flat().filter(x => x).length} / ${maze.size.width * maze.size.height}`;
 }
 
 function draw() {
