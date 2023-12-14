@@ -5,12 +5,85 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
+    background-color: #add8e6 ;
 }
-
 canvas {
+    margin-top: 5%;
     border: 1px solid black;
 }
 
+.mazeMaker {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    margin: 10px;
+    background: skyblue;
+}
+
+.buttonMake {
+    justify-content: space-between;
+    width: 50%;
+    margin: 10px 10px; /* Khoảng cách giữa các container */
+    padding: 10px; /* Thêm padding cho mỗi container nếu cần thiết */
+}    
+
+#btnGenerate,
+#btnClear {
+    width: calc(50% - 2px); /* Độ rộng của 2 button trên */
+    height: 30px;
+    background: powderblue;
+}
+
+#btnFill {
+    width: 100%; /* Độ rộng của button Fill bằng 100% */
+    margin-top: 5px; /* Khoảng cách giữa button Fill và 2 button trên */
+    height: 30px;
+    background: powderblue;
+}
+
+.otherOptions {
+    justify-content: space-between;
+    max-width: 40%;
+    margin: 0px auto;
+}
+
+.mazeSolver {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    background: skyblue;
+    height: 35%;
+}
+
+.buttonSolve {
+    justify-content: space-between;
+    width: 50%;
+    margin: 10px 10px; /* Khoảng cách giữa các container */
+    padding: 10px; /* Thêm padding cho mỗi container nếu cần thiết */
+}
+
+#btnPlaceStart,
+#btnPlaceEnd {
+    width: calc(50% - 2px);
+    height: 30px;
+    margin-top: 5px;
+    background: powderblue;
+}
+
+#btnSolve,
+#btnGenerateAndSolve {
+    width: calc(50% - 2px);
+    height: 30px;
+    margin-top: 5px;
+    background: powderblue;
+}
+
+.otherOptionsSolve {
+    justify-content: space-between;
+    max-width: 40%;
+    margin: 10px auto;
+}
 /*#input {*/
 /*    margin-top: 10px;*/
 /*    display: flex;*/
