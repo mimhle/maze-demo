@@ -15,36 +15,49 @@
 <main id="canvas">
 </main>
 <div id="input">
-    <button id="btnGenerate" onclick="btnGenerate_Click()">Generate</button>
-    <button id="btnClear" onclick="btnClear_Click()">Clear</button>
-    <button id="btnFill" onclick="btnFill_Click()">Fill</button>
-    <label for="animateCheckbox"> Animate </label><input id="animateCheckbox" type="checkbox" checked>
-    <label for="generateAlgorithm"> Generate algorithm </label>
-    <select id="generateAlgorithm">
-        <option value="0">Randomized Depth-First Search</option>
-        <option value="1">Randomized Prim's Algorithm</option>
-        <option value="2">Wilson's Algorithm (in progress)</option>
-        <option value="3">Aldous-Broder Algorithm</option>
-        <option value="4">Recursive Division</option>
-    </select>
-    <label for="solveAlgorithm"> Solve algorithm </label>
-    <select id="solveAlgorithm">
-        <option value="0">Depth-First Search</option>
-        <option value="1">Depth-First Search (with heuristic, Euclidean distance)</option>
-        <option value="2">Depth-First Search (with heuristic, Manhattan distance)</option>
-        <option value="3">Depth-First Search (randomized)</option>
-        <option value="4">Breadth-First Search</option>
-        <option value="5">A* Search (Euclidean distance)</option>
-        <option value="6">A* Search (Manhattan distance)</option>
-        <option value="7">Left-Hand Rule</option>
-        <option value="8">Right-Hand Rule</option>
-    </select>
-    <button id="btnPlaceStart" onclick="btnPlaceStart_Click()">Place Start</button>
-    <button id="btnPlaceEnd" onclick="btnPlaceEnd_Click()">Place End</button>
-    <button id="btnSolve" onclick="btnSolve_Click()">Solve</button>
-    <button id="btnGenerateAndSolve" onclick="btnGenerateAndSolve_Click()">Generate and Solve</button>
-    <i id="status"></i>
-
+    <div class="mazeMaker">
+        <div class="buttonMake">
+            <button id="btnGenerate" onclick="btnGenerate_Click()">Generate</button>
+            <button id="btnClear" onclick="btnClear_Click()">Clear</button>
+            <button id="btnFill" onclick="btnFill_Click()">Fill</button>
+        </div>
+        <div class="otherOptions">
+            <label for="generateAlgorithm"> Generate algorithm </label>
+            <select id="generateAlgorithm">
+                <option value="0">Randomized Depth-First Search</option>
+                <option value="1">Randomized Prim's Algorithm</option>
+                <option value="2">Wilson's Algorithm (in progress)</option>
+                <option value="3">Aldous-Broder Algorithm</option>
+                <option value="4">Recursive Division</option>
+            </select>
+            <label for="animateCheckbox"> Animate </label><input id="animateCheckbox" type="checkbox" checked>
+        </div>
+    </div>
+    <div class="mazeSolver">
+        <div class="buttonSolve">
+            <button id="btnPlaceStart" onclick="btnPlaceStart_Click()">Place Start</button>
+            <button id="btnPlaceEnd" onclick="btnPlaceEnd_Click()">Place End</button>
+            <button id="btnSolve" onclick="btnSolve_Click()">Solve</button>
+            <button id="btnGenerateAndSolve" onclick="btnGenerateAndSolve_Click()">Generate and Solve</button>
+        </div>
+        <div class="otherOptionsSolve">
+            <label for="solveAlgorithm"> Solve algorithm </label>
+            <select id="solveAlgorithm">
+                <option value="0">Depth-First Search</option>
+                <option value="1">Depth-First Search (with heuristic, Euclidean distance)</option>
+                <option value="2">Depth-First Search (with heuristic, Manhattan distance)</option>
+                <option value="3">Depth-First Search (randomized)</option>
+                <option value="4">Breadth-First Search</option>
+                <option value="5">A* Search (Euclidean distance)</option>
+                <option value="6">A* Search (Manhattan distance)</option>
+                <option value="7">Left-Hand Rule</option>
+                <option value="8">Right-Hand Rule</option>
+            </select>
+            <i id="status"></i>
+        </div>
+    </div>
+    
+    
 </div>
 </body>
 </html>
