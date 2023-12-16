@@ -15,8 +15,6 @@ function getSolverAlg() {
             return aStarEuclideanSolve;
         case "6":
             return aStarManhattanSolve;
-        case "7":
-            return leftHandRule;
         default:
             throw new Error("Invalid algorithm");
     }
