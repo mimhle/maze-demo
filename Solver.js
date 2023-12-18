@@ -253,6 +253,31 @@ function* aStarEuclideanSolve(maze) {
         }
         yield maze;
     }
+
+    while (true) {
+        const nodes = {};
+        maze.path.forEach(([x1, y1, x2, y2]) => {
+            nodes[`${x1},${y1}`] = (nodes[`${x1},${y1}`] || 0) + 1;
+            nodes[`${x2},${y2}`] = (nodes[`${x2},${y2}`] || 0) + 1;
+        });
+
+        delete nodes[`${startX},${startY}`];
+        delete nodes[`${endX},${endY}`];
+
+        const deadEnds = Object.keys(nodes).filter(key => nodes[key] === 1);
+
+        if (deadEnds.length === 0) break;
+
+        for (let i = deadEnds.length - 1; i >= 0; i--) {
+            const [x, y] = deadEnds[i].split(",").map(Number);
+            if ((x === startX && y === startY) || (x === endX && y === endY)) continue;
+            maze.path = maze.path.filter(([x1, y1, x2, y2]) => {
+                return !(x1 === x && y1 === y) && !(x2 === x && y2 === y);
+            });
+            yield maze;
+        }
+    }
+
     return maze;
 }
 
@@ -281,6 +306,31 @@ function* aStarManhattanSolve(maze) {
         }
         yield maze;
     }
+
+    while (true) {
+        const nodes = {};
+        maze.path.forEach(([x1, y1, x2, y2]) => {
+            nodes[`${x1},${y1}`] = (nodes[`${x1},${y1}`] || 0) + 1;
+            nodes[`${x2},${y2}`] = (nodes[`${x2},${y2}`] || 0) + 1;
+        });
+
+        delete nodes[`${startX},${startY}`];
+        delete nodes[`${endX},${endY}`];
+
+        const deadEnds = Object.keys(nodes).filter(key => nodes[key] === 1);
+
+        if (deadEnds.length === 0) break;
+
+        for (let i = deadEnds.length - 1; i >= 0; i--) {
+            const [x, y] = deadEnds[i].split(",").map(Number);
+            if ((x === startX && y === startY) || (x === endX && y === endY)) continue;
+            maze.path = maze.path.filter(([x1, y1, x2, y2]) => {
+                return !(x1 === x && y1 === y) && !(x2 === x && y2 === y);
+            });
+            yield maze;
+        }
+    }
+
     return maze;
 }
 
