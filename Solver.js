@@ -15,8 +15,6 @@ function getSolverAlg() {
             return aStarEuclideanSolve;
         case "6":
             return aStarManhattanSolve;
-        case "7":
-            return leftHandRule;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -227,6 +225,9 @@ function* bfsSolve(maze) {
         }
         yield maze;
     }
+
+    yield* maze.removeDeadEnds();
+
     return maze;
 }
 
@@ -255,6 +256,9 @@ function* aStarEuclideanSolve(maze) {
         }
         yield maze;
     }
+
+    yield* maze.removeDeadEnds();
+
     return maze;
 }
 
@@ -283,6 +287,9 @@ function* aStarManhattanSolve(maze) {
         }
         yield maze;
     }
+
+    yield* maze.removeDeadEnds();
+
     return maze;
 }
 

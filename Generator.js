@@ -6,8 +6,6 @@ function getGenAlg() {
         case "1":
             return randomizedPrims;
         case "2":
-            return wilsons;
-        case "3":
             return aldousBroder;
         default:
             throw new Error("Invalid algorithm");
