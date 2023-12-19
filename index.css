@@ -50,6 +50,10 @@ canvas {
     margin: 0 auto;
 }
 
+select#generateAlgorithm {
+    width: 90%;
+}
+
 .mazeSolver {
     display: flex;
     align-items: center;
@@ -82,10 +86,15 @@ canvas {
     background: powderblue;
 }
 
+select#solveAlgorithm {
+    width: 90%;
+
+}
+
 .otherOptionsSolve {
     justify-content: space-between;
     max-width: 40%;
-    margin: 10px auto;
+    margin: 0px auto;
 }
 /*#input {*/
 /*    margin-top: 10px;*/
