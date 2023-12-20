@@ -64,7 +64,10 @@ function draw() {
     drawStartEnd();
 
     if (maze.visited.flat().filter(x => x).length !== 0) {
-        document.getElementById("status").innerHTML = `Visited: ${maze.visited.flat().filter(x => x).length} / ${maze.size.width * maze.size.height}`;
+        // document.getElementById("status").innerHTML = `Visited: ${maze.visited.flat().filter(x => x).length} / ${maze.size.width * maze.size.height}`;
+        let status = `Visited: ${maze.visited.flat().filter(x => x).length} / ${maze.size.width * maze.size.height}`;
+        status += `<br>Path Length: ${maze.path.length}`;
+        document.getElementById("status").innerHTML = status;
     }
 }
 
