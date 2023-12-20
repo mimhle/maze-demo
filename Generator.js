@@ -11,6 +11,10 @@ function getGenAlg() {
             return huntAndKill;
         case "4":
             return recursiveDivision;
+        case "5":
+            return recursiveDivisionSparse;
+        case "6":
+            return binaryTree;
         default:
             throw new Error("Invalid algorithm");
     }
@@ -170,6 +174,70 @@ function* recursiveDivision(maze) {
         }
         console.log(width, height);
         yield maze;
+    }
+
+    return maze;
+}
+
+function* recursiveDivisionSparse(maze) {
+
+    maze.reset(false);
+
+    const stack = [[0, 0, maze.size.width - 1, maze.size.height - 1]];
+
+    while (stack.length > 0) {
+        const [x1, y1, x2, y2] = stack.pop();
+        const width = x2 - x1;
+        const height = y2 - y1;
+        if (width <= 0 || height <= 0) continue;
+
+        if (width > height) {
+            const wallX = Math.floor(Math.random() * width) + x1;
+            const holeY1 = Math.floor(Math.random() * height) + y1;
+            const holeY2 = Math.floor(Math.random() * height) + y1;
+            for (let i = y1; i <= y2; i++) {
+                if (i !== holeY1 && i !== holeY2) {
+                    maze.disconnectCells(wallX, i, wallX + 1, i);
+                }
+            }
+            stack.push([x1, y1, wallX, y2]);
+            stack.push([wallX + 1, y1, x2, y2]);
+        } else {
+            const wallY = Math.floor(Math.random() * height) + y1;
+            const holeX1 = Math.floor(Math.random() * width) + x1;
+            const holeX2 = Math.floor(Math.random() * width) + x1;
+            for (let i = x1; i <= x2; i++) {
+                if (i !== holeX1 && i !== holeX2) {
+                    maze.disconnectCells(i, wallY, i, wallY + 1);
+                }
+            }
+            stack.push([x1, y1, x2, wallY]);
+            stack.push([x1, wallY + 1, x2, y2]);
+        }
+        console.log(width, height);
+        yield maze;
+    }
+
+    return maze;
+}
+
+function* binaryTree(maze) {
+    for (let i = 0; i < maze.size.width; i++) {
+        for (let j = 0; j < maze.size.height; j++) {
+            let right = Math.random() < 0.5;
+            if (i === maze.size.width - 1) right = false;
+            else if (j === maze.size.height - 1) right = true;
+
+            if (right && i === maze.size.width - 1) continue;
+            if (!right && j === maze.size.height - 1) continue;
+
+            if (right) {
+                maze.connectCells(i, j, i + 1, j);
+            } else {
+                maze.connectCells(i, j, i, j + 1);
+            }
+            yield maze;
+        }
     }
 
     return maze;
