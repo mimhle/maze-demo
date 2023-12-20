@@ -107,6 +107,18 @@ class Maze {
         return false;
     };
 
+    getVisitedCells() {
+        let visited = [];
+        for (let i = 0; i < this.size.width; i++) {
+            for (let j = 0; j < this.size.height; j++) {
+                if (this.visited[i][j]) {
+                    visited.push([i, j]);
+                }
+            }
+        }
+        return visited;
+    }
+
     getUnvisitedCells() {
         let unvisited = [];
         for (let i = 0; i < this.size.width; i++) {
