@@ -231,17 +231,25 @@ function btnSolve_Click() {
 }
 
 function btnGenerateAndSolve_Click() {
+    const initialAnimateCheckbox = document.getElementById("animateCheckbox").checked;
+    document.getElementById("animateCheckbox").checked = false;
     btnGenerate_Click();
     while (!generator?.next().done) { }
+    document.getElementById("animateCheckbox").checked = initialAnimateCheckbox;
+
     btnSolve_Click();
 }
 
 function btnPlaceStart_Click() {
+    if (generator || solver) return;
+
     placeStart = !placeStart;
     placeEnd = false;
 }
 
 function btnPlaceEnd_Click() {
+    if (generator || solver) return;
+
     placeEnd = !placeEnd;
     placeStart = false;
 }
