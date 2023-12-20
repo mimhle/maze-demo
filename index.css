@@ -11,6 +11,10 @@ canvas {
     border: 1px solid black;
 }
 
+#input {
+    width: 67%;
+}
+
 .mazeMaker {
     display: flex;
     align-items: baseline;
@@ -26,14 +30,14 @@ canvas {
     padding: 10px; /* Thêm padding cho mỗi container nếu cần thiết */
 }    
 
-#btnGenerate,
+#btnFill,
 #btnClear {
     width: calc(50% - 2px); /* Độ rộng của 2 button trên */
     height: 30px;
     background: powderblue;
 }
 
-#btnFill {
+#btnGenerate {
     width: 100%; /* Độ rộng của button Fill bằng 100% */
     margin-top: 5px; /* Khoảng cách giữa button Fill và 2 button trên */
     height: 30px;
@@ -44,6 +48,10 @@ canvas {
     justify-content: space-between;
     max-width: 40%;
     margin: 0 auto;
+}
+
+select#generateAlgorithm {
+    width: 90%;
 }
 
 .mazeSolver {
@@ -78,10 +86,15 @@ canvas {
     background: powderblue;
 }
 
+select#solveAlgorithm {
+    width: 90%;
+
+}
+
 .otherOptionsSolve {
     justify-content: space-between;
     max-width: 40%;
-    margin: 10px auto;
+    margin: 0px auto;
 }
 /*#input {*/
 /*    margin-top: 10px;*/
