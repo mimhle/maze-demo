@@ -146,7 +146,7 @@ function* recursiveDivision(maze) {
     const stack = [[0, 0, maze.size.width - 1, maze.size.height - 1]];
 
     while (stack.length > 0) {
-        const [x1, y1, x2, y2] = stack.pop();
+        const [x1, y1, x2, y2] = stack.shift(); // this looks cooler than pop()
         const width = x2 - x1;
         const height = y2 - y1;
         if (width <= 0 || height <= 0) continue;
@@ -186,7 +186,7 @@ function* recursiveDivisionSparse(maze) {
     const stack = [[0, 0, maze.size.width - 1, maze.size.height - 1]];
 
     while (stack.length > 0) {
-        const [x1, y1, x2, y2] = stack.pop();
+        const [x1, y1, x2, y2] = stack.shift(); // again, this looks cooler than pop()
         const width = x2 - x1;
         const height = y2 - y1;
         if (width <= 0 || height <= 0) continue;
