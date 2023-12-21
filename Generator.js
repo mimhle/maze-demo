@@ -85,10 +85,6 @@ function* randomizedPrims(maze, x, y) {
     return maze;
 }
 
-function* wilsons(maze, x, y) {
-    // TODO: Implement
-}
-
 function* aldousBroder(maze, x, y) {
     maze.visited[x][y] = true;
     let unvisitedCells = maze.getUnvisitedCells();
