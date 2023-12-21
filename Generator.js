@@ -229,9 +229,12 @@ function* binaryTree(maze) {
 
             if (right) {
                 maze.connectCells(i, j, i + 1, j);
+                maze.visited[i + 1][j] = true;
             } else {
                 maze.connectCells(i, j, i, j + 1);
+                maze.visited[i][j + 1] = true;
             }
+            maze.visited[i][j] = true;
             yield maze;
         }
     }
