@@ -168,7 +168,6 @@ function* recursiveDivision(maze) {
             stack.push([x1, y1, x2, wallY]);
             stack.push([x1, wallY + 1, x2, y2]);
         }
-        console.log(width, height);
         yield maze;
     }
 
