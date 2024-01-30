@@ -13,6 +13,8 @@ let maze = new Maze(width / pixelSize, height / pixelSize)
 let generator = null
 let solver = null
 
+let live = false;
+
 function setup() {
     pixelDensity(1);
     let canvas = createCanvas(width, height);
@@ -32,8 +34,20 @@ function draw() {
         }
     } else if (solver) {
         const done = solver?.next().done;
-        if (done) {
+        if (done && !live) {
             solver = null;
+        } else if (done && live) {
+            if (mouseIsPressed) live = false;
+            if (!(mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= height))
+                maze.end = [Math.floor(mouseX / pixelSize), Math.floor(mouseY / pixelSize)];
+            drawStartEnd();
+            maze.resetVisited();
+            maze.resetPath();
+            solver = visualizeSolve(
+                getSolverAlg(),
+                maze,
+                !document.getElementById("animateCheckbox").checked
+            );
         }
     } else {
         drawMaze(maze);
@@ -228,6 +242,12 @@ function btnSolve_Click() {
             !document.getElementById("animateCheckbox")?.checked
         );
     }
+}
+
+function btnLive_Click() {
+    document.getElementById("animateCheckbox").checked = false;
+    live = !live;
+    btnSolve_Click();
 }
 
 function btnGenerateAndSolve_Click() {
